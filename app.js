@@ -1,0 +1,43 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const app = express();
+const port = 8080;
+const Listing = require("../Airbnb/Models/listing");
+
+
+const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
+
+main().then(() =>{
+    console.log('connected to mongoDB Sucessfully...');
+}).catch(err => {
+    console.log('error');
+})
+
+async function main() {
+    await mongoose.connect(MONGO_URL);
+}
+
+app.listen(port , () => {
+    console.log(`listing to  port  : ${port}`);
+});
+
+app.get('/' , (req , res) => {
+    res.send('hi this is root');``
+});
+
+
+app.get('/listing' , async(req , res) =>{
+    let sampleListing = new Listing ({
+        title : 'my new car',
+        discription : 'i baught my dream car', 
+        price : 65000000,
+        location : 'Kerala',
+        country : 'India',
+    });
+
+    await sampleListing.save();
+    console.log('item has been saved successfully');
+    res.send('saved successfull');
+});
+
+
