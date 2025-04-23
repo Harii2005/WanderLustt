@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const port = 8080;
-const Listing = require("../Airbnb/Models/listing");
+const Listing = require("../Airbnb/Models/listing.js");
 
 
 const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
