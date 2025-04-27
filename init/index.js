@@ -6,7 +6,7 @@ const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
 
 main().then(() =>{
     console.log('connected to mongoDB Sucessfully...');
-}).catch(err => { ¸
+}).catch(err => {
     console.log('error');
 })
 
