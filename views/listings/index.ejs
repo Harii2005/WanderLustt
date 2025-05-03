@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<% layout('/layouts/boilerplate.ejs') %>
 <body>
-    <h3>hey !!</h3>
-    <form method="GET" action="/listings/new" >
+    <h3>ALL LISTINGS!!</h3>
+    <!-- <form method="GET" action="/listings/new" >
         <button>add new </button>
-    </form>
+    </form> -->
     <ul>
         <% for (let listing of allListings) { %> 
             <li><a href = "/listings/<%= listing._id %>"><%= listing.title %></a></li>
         <% } %>  
     </ul>
 </body>
-</html>
