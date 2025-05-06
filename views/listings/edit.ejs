@@ -1,31 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wanderLust</title>
-</head>
+<% layout('/layouts/boilerplate.ejs') %>
 <body>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
-        <input name="listing[title]" value="<%= listing.title %>" type="text">
-        <br><br>
-    
-        <textarea name="listing[description]"><%= listing.description %></textarea>
-        <br><br>
-    
-        <input name="listing[image]" value="<%= listing.image %>" type="text">
-        <br><br>
-    
-        <input name="listing[price]" value="<%= listing.price %>" type="number">
-        <br><br>
-    
-        <input name="listing[country]" value="<%= listing.country %>" type="text">
-        <br><br>
-    
-        <input name="listing[location]" value="<%= listing.location %>" type="text">
-        <br><br>
-    
-        <button type="submit">Submit</button>
-    </form>
+    <div class="row">
+        <div class="col-8 offset-2">
+            <br><h2>Edit your listing</h2>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
+                <br>
+                <div class="mb-3">
+                    <label for="title" class="form-label">enter title</label>
+                    <input 
+                        id="title"
+                        name="listing[title]" 
+                        value="<%= listing.title %>" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="enter title"
+                    />
+                </div><br>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">enter description</label>
+                    <textarea 
+                        id="description"
+                        name="listing[description]" 
+                        class="form-control" 
+                        placeholder="enter description"
+                    ><%= listing.description %></textarea>
+                </div><br>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">image url</label>
+                    <input 
+                        id="image"
+                        name="listing[image]" 
+                        value="<%= listing.image %>" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="enter image URL"
+                    />
+                </div><br>
+
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">price</label>
+                        <input 
+                            id="price"
+                            name="listing[price]" 
+                            value="<%= listing.price %>" 
+                            type="number" 
+                            class="form-control" 
+                            placeholder="enter price"
+                        />
+                    </div>
+
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label">country</label>
+                        <input 
+                            id="country"
+                            name="listing[country]" 
+                            value="<%= listing.country %>" 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="enter country"
+                        />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">location</label>
+                    <input 
+                        id="location"
+                        name="listing[location]" 
+                        value="<%= listing.location %>" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="enter location"
+                    />
+                </div>
+                <button type="submit" class="btn btn-dark edit-btn">Submit</button><br><br>
+            </form>
+        </div>
+    </div>
 </body>
-</html>
