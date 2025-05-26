@@ -5,27 +5,28 @@
 
         <div class="col-8 offset-2 ">
             <br><h2>Create new listing!!</h2>
-            <form method="POST" action="/listings">
+            <form method="POST" action="/listings" novalidate class="needs-validation">
                 <br>
                 <div class="mb-3">
                     <label for="title" class="form-label">enter titile</label>
                     <input 
                         name="listing[title]" 
-                        placeholder="enter title" 
+                         placeholder="enter title" 
                         type="text" 
                         class="form-control"
+                        required
                     />
-                </div><br>
-                
-        
+                    <div class="invalid-feedback">please enter a valid title</div>
+                </div><br>        
+
                 <div class="mb-3">
                     <label for="description" class="form-label">enter description</label>
                     <textarea 
                         name="listing[description]" 
                         placeholder="enter description" 
                         type="text" 
-                        class="form-control"> 
-                    </textarea>
+                        class="form-control"
+                        required></textarea>
                 </div><br>
         
                 <div  class="mb-3">
@@ -35,6 +36,7 @@
                     placeholder="enter image URL" 
                     type="text"
                     class="form-control"
+                    required
                     />
                 </div><br>
                 
@@ -47,6 +49,7 @@
                             placeholder="enter price" 
                             type="number"
                             class="form-control"
+                            required
                         />
                     </div>
             
@@ -59,6 +62,7 @@
                             placeholder="enter country" 
                             type="text"
                             class="form-control"
+                            required
                         />
                     </div>
                 </div>
@@ -73,6 +77,7 @@
                         placeholder="enter location" 
                         type="text"
                         class="form-control"
+                        required
                     />
                 </div>
                 <button class="btn btn-dark add-btn" >submit</button><br><br>
