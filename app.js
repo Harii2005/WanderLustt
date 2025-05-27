@@ -7,6 +7,7 @@ const path = require('path')
 const methodOverride = require('method-override');
 const method = methodOverride('over-override');
 const ejsmate = require('ejs-mate');
+const WrapAsync = require('./utils/WrapAsync.js');
 
 app.set('view engine' , 'ejs'); 
 app.set('views' , path.join(__dirname , 'views'));
@@ -77,13 +78,13 @@ app.get('/listings/:id' , async (req , res) => {
 
 
 //create route
-app.post('/listings' , async(req , res) => {
+app.post('/listings' , WrapAsync(async(req , res , next) => {
     // let {title , discription , image , price , country  , location} = req.body;
     // let listing = req.body.listing;//this is the alternative of the above
     const newlisting = new Listing(req.body.listing);
     await newlisting.save();
     res.redirect('/listings');
-});
+}));
 
 //edit route
 
@@ -108,6 +109,10 @@ app.delete('/listing/:id' , async (req , res) => {
     let deletedstring = await Listing.findByIdAndDelete(id);
     console.log("deleted : \n" , deletedstring);
     res.redirect('/listings');
+});
+
+app.use((err , req, res , next)=>{ //for handling asynchronous errors
+    res.send('something went wrong');
 });
 
 
