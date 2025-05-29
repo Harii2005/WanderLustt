@@ -62,8 +62,8 @@ app.get('/listings/:id' ,WrapAsync(async  (req , res) => {
 
 //create route
 app.post('/listings' , WrapAsync(async(req , res , next) => {
-    if(!listing.body.req){
-        throw new ExpressError(400 , "send valid data for listing");// this will make sure that there is a listing object is send
+    if(!req.body.listing){
+        throw new ExpressError(400 , "send valid data for listing");
     }
     // let {title , discription , image , price , country  , location} = req.body;
     // let listing = req.body.listing;//this is the alternative of the above
@@ -103,7 +103,7 @@ app.all("*", (req, res, next) => {
 
 app.use((err , req, res , next)=>{ //for handling asynchronous errors
     let{statusCode = 500  , message = "something went wrong"} = err;
-    res.status(statusCode).send(message);
+    res.status(statusCode).render('error.ejs' , {err});
 });
 
 
