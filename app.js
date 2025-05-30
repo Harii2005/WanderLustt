@@ -62,11 +62,10 @@ app.get('/listings/:id' ,WrapAsync(async  (req , res) => {
 
 //create route
 app.post('/listings' , WrapAsync(async(req , res , next) => {
+    console.log(req.body);
     if(!req.body.listing){
         throw new ExpressError(400 , "send valid data for listing");
     }
-    // let {title , discription , image , price , country  , location} = req.body;
-    // let listing = req.body.listing;//this is the alternative of the above
     const newlisting = new Listing(req.body.listing);
     await newlisting.save();
     res.redirect('/listings');
