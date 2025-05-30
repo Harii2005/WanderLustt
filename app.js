@@ -5,14 +5,16 @@ const port = 8080;
 const Listing = require("./Models/listing.js"); 
 const path = require('path')
 const methodOverride = require('method-override');
-// const method = methodOverride('over-override');
 const ejsmate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
 const WrapAsync = require('./utils/WrapAsync.js');
+const {listingSchema} = require('./Schema.js');
+
 
 app.set('view engine' , 'ejs'); 
 app.set('views' , path.join(__dirname , 'views'));
 app.use(express.urlencoded({extended : true}));
+app.use(express.json());
 app.use(methodOverride("_method"));
 app.engine('ejs' , ejsmate);
 app.use(express.static(path.join(__dirname,'/public')))
@@ -60,19 +62,21 @@ app.get('/listings/:id' ,WrapAsync(async  (req , res) => {
 }));
 
 
-//create route
-app.post('/listings' , WrapAsync(async(req , res , next) => {
-    console.log(req.body);
-    if(!req.body.listing){
-        throw new ExpressError(400 , "send valid data for listing");
+//Create Route
+app.post('/listings', WrapAsync(async (req, res, next) => {
+    // console.log("req.body :",req.body);
+    // console.log("Listing data:", req.body.listing)  
+    // let result = listingSchema.validate(req.body); // Validate the request body against the schema
+    // console.log(result);
+    if (result.error) {
+        throw new ExpressError(400, result.error.details[0].message);
     }
-    const newlisting = new Listing(req.body.listing);
-    await newlisting.save();
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
     res.redirect('/listings');
-}));
+  }));
 
-//edit route
-
+//edit route 
 app.get('/listings/:id/edit' ,WrapAsync(async (req ,res) => {
     const {id} = req.params;
     let listing = await Listing.findById(id)
@@ -109,5 +113,3 @@ app.use((err , req, res , next)=>{ //for handling asynchronous errors
 app.listen(port , () => {
     console.log(`listing to  port  : ${port}`);
 });
-
-
