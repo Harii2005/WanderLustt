@@ -79,13 +79,6 @@ app.get('/listings/:id' ,validateListing  , WrapAsync(async  (req , res) => {
 app.post('/listings', validateListing, WrapAsync(async (req, res, next) => {
     // console.log("req.body :",req.body);
     // console.log("Listing data:", req.body.listing)  
-
-    //this is now used as a middleware function validateListing();
-    // let result = listingSchema.validate(req.body); // Validate the request body against the schema
-    // console.log(result);
-    // if (result.error) {
-    //     throw new ExpressError(400, result.error.details[0].message);
-    // }
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect('/listings');
