@@ -11,6 +11,19 @@ const WrapAsync = require('./utils/WrapAsync.js');
 const {listingSchema} = require('./Schema.js');
 
 
+//function of middleware for validation of Schema 
+const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
+    let {error} = listingSchema.validate(req.body); // Validate the request body against the schema
+    // console.log(error);
+    if (error) {
+        let errMsg = error.details.map((el)=>el.message).join(",")//this means that all the eroor msg will by combined in errMsg with a coma(",") btw each error messaeg
+        throw new ExpressError(400, errMsg);
+    }else {
+        next();
+    }
+};
+
+
 app.set('view engine' , 'ejs'); 
 app.set('views' , path.join(__dirname , 'views'));
 app.use(express.urlencoded({extended : true}));
@@ -55,7 +68,7 @@ app.get('/listings/new' , (req , res) => {
 //use new route before shoe route bez if  /listings/:id accesing 1st then app.js will consider the new also as a id in  /listings/new
 
 //show route
-app.get('/listings/:id' ,WrapAsync(async  (req , res) => {
+app.get('/listings/:id' ,validateListing  , WrapAsync(async  (req , res) => {
     let {id} = req.params;
     const listing = await Listing.findById(id);
     res.render('listings/show.ejs' , {listing});
@@ -63,14 +76,16 @@ app.get('/listings/:id' ,WrapAsync(async  (req , res) => {
 
 
 //Create Route
-app.post('/listings', WrapAsync(async (req, res, next) => {
+app.post('/listings', validateListing, WrapAsync(async (req, res, next) => {
     // console.log("req.body :",req.body);
     // console.log("Listing data:", req.body.listing)  
+
+    //this is now used as a middleware function validateListing();
     // let result = listingSchema.validate(req.body); // Validate the request body against the schema
     // console.log(result);
-    if (result.error) {
-        throw new ExpressError(400, result.error.details[0].message);
-    }
+    // if (result.error) {
+    //     throw new ExpressError(400, result.error.details[0].message);
+    // }
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect('/listings');
@@ -85,7 +100,7 @@ app.get('/listings/:id/edit' ,WrapAsync(async (req ,res) => {
 
 //update route
 
-app.put('/listings/:id' , WrapAsync(async (req , res) => {
+app.put('/listings/:id' , validateListing , WrapAsync(async (req , res) => {
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id , {...req.body.listing})
     res.redirect(`/listings/${id}`);
