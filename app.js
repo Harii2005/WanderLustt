@@ -68,7 +68,7 @@ app.get('/listings/new' , (req , res) => {
 //use new route before shoe route bez if  /listings/:id accesing 1st then app.js will consider the new also as a id in  /listings/new
 
 //show route
-app.get('/listings/:id' ,validateListing  , WrapAsync(async  (req , res) => {
+app.get('/listings/:id' , WrapAsync(async  (req , res) => {
     let {id} = req.params;
     const listing = await Listing.findById(id);
     res.render('listings/show.ejs' , {listing});
