@@ -12,10 +12,10 @@ const listingSchema = new mongoose.Schema({
     price: Number,
     location: String,
     country: String,
-    review : [
+    reviews : [
       {
         type : Schema.Types.ObjectId,//this means it will store the objectID of another collection here it is Review Scheam
-        ref  : review,
+        ref  : 'Review',
       },
     ],
   });

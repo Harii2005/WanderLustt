@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const app = express();
 const port = 8080;
 const Listing = require("./Models/listing.js"); 
+const Review = require("./Models/review.js"); 
 const path = require('path')
 const methodOverride = require('method-override');
 const ejsmate = require('ejs-mate');
@@ -107,6 +108,19 @@ app.delete('/listings/:id' , WrapAsync(async (req , res) => {
     console.log("deleted : \n" , deletedstring);
     res.redirect('/listings');
 }));
+
+//reviews post route
+app.post("/listings/:id/reviews" , async(req , res)=>{
+    let listing   = await Listing.findById(req.params.id);//params is used as id is passed via endpoint
+    let newReview = new Review(req.body.review);//bez post req is used
+
+    listing.reviews.push(newReview);
+
+    await listing.save();
+    await newReview.save();
+
+    res.redirect(`/listings/${listing.id}`);
+});
 
 app.all("*", (req, res, next) => { 
     next(new ExpressError(404 , "page not found!"));
