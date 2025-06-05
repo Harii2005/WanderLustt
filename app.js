@@ -83,7 +83,7 @@ app.get('/listings/new' , (req , res) => {
 //show route
 app.get('/listings/:id' , WrapAsync(async  (req , res) => {
     let {id} = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate('reviews');
     res.render('listings/show.ejs' , {listing});
 }));
 
@@ -142,7 +142,6 @@ app.use((err , req, res , next)=>{ //for handling asynchronous errors
     let{statusCode = 500  , message = "something went wrong"} = err;
     res.status(statusCode).render('error.ejs' , {err});
 });
-
 
 app.listen(port , () => {
     console.log(`listing to  port  : ${port}`);
