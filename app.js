@@ -9,7 +9,7 @@ const methodOverride = require('method-override');
 const ejsmate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
 const WrapAsync = require('./utils/WrapAsync.js');
-const {listingSchema} = require('./Schema.js');
+const {listingSchema , reviewSchema} = require('./Schema.js');
 
 
 //function of middleware for validation of Schema 
@@ -23,6 +23,18 @@ const validateListing = (req , res , next)=> { //function of validation of schem
         next();
     }
 };
+
+//server side validation for review
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const errMsg = error.details.map(el => el.message).join(", ");
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    }
+};
+
 
 
 app.set('view engine' , 'ejs'); 
@@ -110,7 +122,7 @@ app.delete('/listings/:id' , WrapAsync(async (req , res) => {
 }));
 
 //reviews post route
-app.post("/listings/:id/reviews" , async(req , res)=>{
+app.post("/listings/:id/reviews" , validateReview , WrapAsync(async(req , res)=>{
     let listing   = await Listing.findById(req.params.id);//params is used as id is passed via endpoint
     let newReview = new Review(req.body.review);//bez post req is used
 
@@ -120,7 +132,7 @@ app.post("/listings/:id/reviews" , async(req , res)=>{
     await newReview.save();
 
     res.redirect(`/listings/${listing.id}`);
-});
+}));
 
 app.all("*", (req, res, next) => { 
     next(new ExpressError(404 , "page not found!"));
