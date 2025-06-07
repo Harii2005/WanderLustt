@@ -10,6 +10,7 @@ const ejsmate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
 const WrapAsync = require('./utils/WrapAsync.js');
 const {listingSchema , reviewSchema} = require('./Schema.js');
+const e = require('express');
 
 
 //function of middleware for validation of Schema 
@@ -134,8 +135,18 @@ app.post("/listings/:id/reviews" , validateReview , WrapAsync(async(req , res)=>
     res.redirect(`/listings/${listing.id}`);
 }));
 
+//delete reviews  button
+app.delete("/listings/:id/reviews/:reviewId", WrapAsync(async(req, res) => {
+    let {id, reviewId} = req.params;
+    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});//this will remove the specified reviewId from listing
+    
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
+}));
+
 app.all("*", (req, res, next) => { 
     next(new ExpressError(404 , "page not found!"));
+    console.log(err);
 });
 
 app.use((err , req, res , next)=>{ //for handling asynchronous errors
