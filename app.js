@@ -10,7 +10,6 @@ const ejsmate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
 const WrapAsync = require('./utils/WrapAsync.js');
 const {listingSchema , reviewSchema} = require('./Schema.js');
-const e = require('express');
 
 
 //function of middleware for validation of Schema 
