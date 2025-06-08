@@ -3,7 +3,7 @@ const router = express.Router();
 const Listing = require("../Models/listing.js"); 
 const WrapAsync = require('../utils/WrapAsync.js');
 const ExpressError = require("../utils/ExpressError.js");
-const {listingSchema , reviewSchema} = require('../Schema.js');
+const {listingSchema } = require('../Schema.js');
 
 //function of middleware for validation of Schema 
 const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)

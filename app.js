@@ -2,40 +2,42 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const port = 8080;
-const Listing = require("./Models/listing.js"); 
-const Review = require("./Models/review.js"); 
+// const Listing = require("./Models/listing.js"); 
+// const Review = require("./Models/review.js"); 
 const path = require('path')
 const methodOverride = require('method-override');
 const ejsmate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
-const WrapAsync = require('./utils/WrapAsync.js');
-const {listingSchema , reviewSchema} = require('./Schema.js');
+// const WrapAsync = require('./utils/WrapAsync.js');
+// const {listingSchema , reviewSchema} = require('./Schema.js');
 const listings = require("./routes/listing.js");
+const reviews  = require("./routes/review.js");
+//the commented parts are not needed as they are now used in routes folder 
 
 
 
-//function of middleware for validation of Schema 
-const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
-    let {error} = listingSchema.validate(req.body); // Validate the request body against the schema
-    // console.log(error);
-    if (error) {
-        let errMsg = error.details.map((el)=>el.message).join(",")//this means that all the eroor msg will by combined in errMsg with a coma(",") btw each error messaeg
-        throw new ExpressError(400, errMsg);
-    }else {
-        next();
-    }
-};
+// //function of middleware for validation of Schema 
+// const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
+//     let {error} = listingSchema.validate(req.body); // Validate the request body against the schema
+//     // console.log(error);
+//     if (error) {
+//         let errMsg = error.details.map((el)=>el.message).join(",")//this means that all the eroor msg will by combined in errMsg with a coma(",") btw each error messaeg
+//         throw new ExpressError(400, errMsg);
+//     }else {
+//         next();
+//     }
+// };
 
-//server side validation for review
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const errMsg = error.details.map(el => el.message).join(", ");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next();
-    }
-};
+// //server side validation for review
+// const validateReview = (req, res, next) => {
+//     const { error } = reviewSchema.validate(req.body);
+//     if (error) {
+//         const errMsg = error.details.map(el => el.message).join(", ");
+//         throw new ExpressError(400, errMsg);
+//     } else {
+//         next();
+//     };
+// };
 
 
 
@@ -64,6 +66,7 @@ async function main() {
 
 
 app.use("/listings" , listings);
+app.use("/listings/:id/reviews" , reviews);
 
 
 
@@ -124,28 +127,28 @@ app.get('/' , (req , res) => {
 
 
 
-// REVIEW ROUTES
-//reviews post route
-app.post("/listings/:id/reviews" , validateReview , WrapAsync(async(req , res)=>{
-    let listing   = await Listing.findById(req.params.id);//params is used as id is passed via endpoint
-    let newReview = new Review(req.body.review);//bez post req is used
+// // REVIEW ROUTES
+// //reviews post route
+// app.post("/listings/:id/reviews" , validateReview , WrapAsync(async(req , res)=>{
+//     let listing   = await Listing.findById(req.params.id);//params is used as id is passed via endpoint
+//     let newReview = new Review(req.body.review);//bez post req is used
 
-    listing.reviews.push(newReview);
+//     listing.reviews.push(newReview);
 
-    await listing.save();
-    await newReview.save();
+//     await listing.save();
+//     await newReview.save();
 
-    res.redirect(`/listings/${listing.id}`);
-}));
+//     res.redirect(`/listings/${listing.id}`);
+// }));
 
-//delete reviews  button
-app.delete("/listings/:id/reviews/:reviewId", WrapAsync(async(req, res) => {
-    let {id, reviewId} = req.params;
-    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});//this will remove the specified reviewId from listing
+// //delete reviews  button
+// app.delete("/listings/:id/reviews/:reviewId", WrapAsync(async(req, res) => {
+//     let {id, reviewId} = req.params;
+//     await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});//this will remove the specified reviewId from listing
     
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/listings/${id}`);
-}));
+//     await Review.findByIdAndDelete(reviewId);
+//     res.redirect(`/listings/${id}`);
+// }));
 
 app.all("*", (req, res, next) => { 
     next(new ExpressError(404 , "page not found!"));
