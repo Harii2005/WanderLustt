@@ -14,6 +14,14 @@ const listings = require("./routes/listing.js");
 const reviews  = require("./routes/review.js");
 //the commented parts are not needed as they are now used in routes folder 
 
+const session = require('express-session');
+const sessionOptions = {
+    secret: "mysupersecretcode",
+    resave: false,
+    saveUninitialized: true,
+};
+
+app.use(session(sessionOptions));
 
 
 // //function of middleware for validation of Schema 
