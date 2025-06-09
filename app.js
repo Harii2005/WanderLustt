@@ -14,6 +14,7 @@ const listings = require("./routes/listing.js");
 const reviews  = require("./routes/review.js");
 //the commented parts are not needed as they are now used in routes folder 
 
+const flash = require('connect-flash');
 const session = require('express-session');
 const sessionOptions = {
     secret: "mysupersecretcode",
@@ -26,7 +27,19 @@ const sessionOptions = {
     }
 };
 
+//root
+app.get('/' , (req , res) => {
+    res.send('hi this is root');
+});
+
+
+app.use(flash());
 app.use(session(sessionOptions));
+
+app.use((req , res , next)=>{
+    res.locals.success =  req.flash("success");
+    next();
+});
 
 
 // //function of middleware for validation of Schema 
@@ -83,10 +96,7 @@ app.use("/listings/:id/reviews" , reviews);
 
 
 
-//root
-app.get('/' , (req , res) => {
-    res.send('hi this is root');
-});
+
 
 // //LISTING ROUTES
 // //new route

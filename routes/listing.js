@@ -46,13 +46,16 @@ router.post('/', validateListing, WrapAsync(async (req, res, next) => {
     // console.log("Listing data:", req.body.listing)  
     const newListing = new Listing(req.body.listing);
     await newListing.save();
+
+    req.flash("success" , "new listing created");
     res.redirect('/listings');
   }));
 
 //edit route 
 router.get('/:id/edit' ,WrapAsync(async (req ,res) => {
     const {id} = req.params;
-    let listing = await Listing.findById(id)
+    let listing = await Listing.findById(id);
+    req.flash("success" , "listing edited");
     res.render('listings/edit.ejs' , {listing});
 }));
 
@@ -60,7 +63,8 @@ router.get('/:id/edit' ,WrapAsync(async (req ,res) => {
 
 router.put('/:id' , validateListing , WrapAsync(async (req , res) => {
     let {id} = req.params;
-    await Listing.findByIdAndUpdate(id , {...req.body.listing})
+    await Listing.findByIdAndUpdate(id , {...req.body.listing});
+    req.flash("success" , "listing updated");
     res.redirect(`/listings/${id}`);
 }));
 
@@ -70,6 +74,7 @@ router.delete('/:id' , WrapAsync(async (req , res) => {
     const {id} = req.params;
     let deletedstring = await Listing.findByIdAndDelete(id);
     console.log("deleted : \n" , deletedstring);
+    req.flash("success" , "listing deleted");
     res.redirect('/listings');
 }));
 
