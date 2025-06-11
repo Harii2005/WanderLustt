@@ -6,6 +6,7 @@ const ExpressError = require("../utils/ExpressError.js");
 const {listingSchema } = require('../Schema.js');
 const {isLoggedIn} = require("../middleware.js");
 
+
 //function of middleware for validation of Schema 
 const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
     let {error} = listingSchema.validate(req.body); // Validate the request body against the schema
@@ -69,7 +70,6 @@ router.get('/:id/edit' , isLoggedIn , WrapAsync(async (req ,res) => {
 }));
 
 //update route
-
 router.put('/:id' , isLoggedIn , validateListing , WrapAsync(async (req , res) => {
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id , {...req.body.listing});

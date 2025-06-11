@@ -3,6 +3,7 @@ const router  = express.Router({});
 const User    = require("../Models/user.js");
 const WrapAsync = require("../utils/WrapAsync.js")
 const passport = require('passport');
+const {saveRedirectUrl} = require("../middleware.js");
 
 router.get('/signup' , (req , res) =>{
     res.render('./users/signup.ejs');
@@ -35,8 +36,9 @@ router.get('/login' , (req , res) =>{
     res.render('./users/login.ejs');
 });
 
-router.post('/login' ,
-    passport.authenticate('local',{ //middleware used for authentification ie it will check wheather the given username and password in correct
+router.post('/login',
+    saveRedirectUrl, 
+    passport.authenticate('local',{ //middleware used for authentification ie it will check wheather the given username and password in
         
         failureRedirect: '/login',//this ,means passport package will cheeck wheather the given username and pass exists in the UserSchema or NOT
 
@@ -44,7 +46,8 @@ router.post('/login' ,
     }),
     (req , res) =>{
         req.flash("success" , "Welcome to Wanderlust! You are logged in!");
-        res.redirect("/listings");
+        console.log(res.locals.originalUrl);
+        res.redirect(res.locals.originalUrl);
     }
 );
 
