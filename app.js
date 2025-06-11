@@ -34,6 +34,7 @@ const LocalStrategy = require('passport-local');
 const User = require('./Models/user.js');
 
 
+
 //root
 app.get('/' , (req , res) => {
     res.send('hi this is root');
@@ -45,6 +46,7 @@ app.use(session(sessionOptions));
 
 //authentication
 app.use(passport.initialize());
+app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -53,6 +55,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req , res , next)=>{
     res.locals.success =  req.flash("success");
     res.locals.error =  req.flash("error");
+    res.locals.currentUser = req.user;//this means that req.user will be saved in the currentUser it is done beacause in ejs req.user is not possoble so currentUser is used
     next();
 });
 

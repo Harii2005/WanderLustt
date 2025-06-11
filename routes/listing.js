@@ -4,6 +4,7 @@ const Listing = require("../Models/listing.js");
 const WrapAsync = require('../utils/WrapAsync.js');
 const ExpressError = require("../utils/ExpressError.js");
 const {listingSchema } = require('../Schema.js');
+const {isLoggedIn} = require("../middleware.js");
 
 //function of middleware for validation of Schema 
 const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
@@ -26,7 +27,7 @@ router.get('/', WrapAsync(async (req, res) => {
 
 
 //new route
-router.get('/new' , (req , res) => {
+router.get('/new' , isLoggedIn , (req , res) => {
     res.render('listings/new.ejs');
 });
 
@@ -45,7 +46,7 @@ router.get('/:id' , WrapAsync(async  (req , res) => {
 
 
 //Create Route
-router.post('/', validateListing, WrapAsync(async (req, res, next) => {
+router.post('/', isLoggedIn , validateListing, WrapAsync(async (req, res, next) => {
     // console.log("req.body :",req.body);
     // console.log("Listing data:", req.body.listing)  
     const newListing = new Listing(req.body.listing);
@@ -56,7 +57,7 @@ router.post('/', validateListing, WrapAsync(async (req, res, next) => {
   }));
 
 //edit route 
-router.get('/:id/edit' ,WrapAsync(async (req ,res) => {
+router.get('/:id/edit' , isLoggedIn , WrapAsync(async (req ,res) => {
     const {id} = req.params;
     let listing = await Listing.findById(id);
     if(!listing){
@@ -69,7 +70,7 @@ router.get('/:id/edit' ,WrapAsync(async (req ,res) => {
 
 //update route
 
-router.put('/:id' , validateListing , WrapAsync(async (req , res) => {
+router.put('/:id' , isLoggedIn , validateListing , WrapAsync(async (req , res) => {
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id , {...req.body.listing});
     req.flash("success" , "listing updated");
@@ -78,7 +79,7 @@ router.put('/:id' , validateListing , WrapAsync(async (req , res) => {
 
 
 //delete route
-router.delete('/:id' , WrapAsync(async (req , res) => {
+router.delete('/:id' , isLoggedIn , WrapAsync(async (req , res) => {
     const {id} = req.params;
     let deletedstring = await Listing.findByIdAndDelete(id);
     console.log("deleted : \n" , deletedstring);

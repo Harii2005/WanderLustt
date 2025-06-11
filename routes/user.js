@@ -15,8 +15,14 @@ router.post('/signup' ,WrapAsync( async(req , res) =>{
         const regesteredUser = await User.register(newuser , password);//in this way the password will be stored in hashed form 
         //also this will save the file so no need to use newuser.save()
         console.log(regesteredUser);
-        req.flash("success" , "Welcome to Wanderlust");
-        res.redirect("/listings");
+        req.login(regesteredUser , (err)=>{//req.login will help us to automactically login after signup
+            if(err){
+                next(err);
+            }
+            req.flash("success" , "Welcome to Wanderlust");
+            res.redirect("/listings");
+        });
+
     }catch(err){
         req.flash("error" , err.message);
         res.redirect("/signup");
@@ -30,7 +36,7 @@ router.get('/login' , (req , res) =>{
 });
 
 router.post('/login' ,
-    passport.authenticate('local',{ //middleware used for authentification
+    passport.authenticate('local',{ //middleware used for authentification ie it will check wheather the given username and password in correct
         
         failureRedirect: '/login',//this ,means passport package will cheeck wheather the given username and pass exists in the UserSchema or NOT
 
@@ -42,20 +48,17 @@ router.post('/login' ,
     }
 );
 
-// router.get("/login", (req, res) => {
-//     res.render("users/login.ejs");
-// });
 
-// router.post(
-//     "/login",
-//     passport.authenticate("local", {
-//         failureRedirect: "/login",
-//         failureFlash: true,
-//     }),
-//     (req, res) => {
-//         res.send("Welcome to Wanderlust! You are logged in!");
-//     }
-// );
+router.get('/logout' , (req , res) =>{
+    req.logOut((err) =>{//req.logOut clears the passport session so logs out 
+        if(err){
+            return next(err);
+        }
+        req.flash("success" , "loggedOut successfully!");
+        res.redirect("/listings");
+    });
+
+});
 
 
 module.exports = router;
