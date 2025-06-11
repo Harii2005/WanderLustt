@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Review = require('./review.js');
 const Schema = mongoose.Schema;
+const User = require("./user.js");
 
 const listingSchema = new mongoose.Schema({
     title: { type: String, required: true },
@@ -18,6 +19,10 @@ const listingSchema = new mongoose.Schema({
         ref  : 'Review',
       },
     ],
+    owner : {
+      type : Schema.Types.ObjectId,//this means it will store the objectID of another collection here it is Review Scheam
+      ref  : 'user',
+    }
   });
 
   listingSchema.post('findOneAndDelete', async (listing) =>{
