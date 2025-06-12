@@ -2,22 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Listing = require("../Models/listing.js"); 
 const WrapAsync = require('../utils/WrapAsync.js');
-const ExpressError = require("../utils/ExpressError.js");
-const {listingSchema } = require('../Schema.js');
+
+//middleware
 const {isLoggedIn} = require("../middleware.js");
-
-
-//function of middleware for validation of Schema 
-const validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
-    let {error} = listingSchema.validate(req.body); // Validate the request body against the schema
-    // console.log(error);
-    if (error) {
-        let errMsg = error.details.map((el)=>el.message).join(",")//this means that all the eroor msg will by combined in errMsg with a coma(",") btw each error messaeg
-        throw new ExpressError(400, errMsg);
-    }else {
-        next();
-    }
-};
+const {isOwner} = require("../middleware.js");
+const {validateListing} = require("../middleware.js");
 
 
 //index route
@@ -40,7 +29,6 @@ router.get('/:id' , WrapAsync(async  (req , res) => {
     const listing = await Listing.findById(id)
         .populate('reviews')
         .populate('owner');
-    console.log(listing);
     if(!listing){
         req.flash("error" , "the listing you requested does not exists sorry!!");
         res.redirect('/listings');
@@ -63,7 +51,7 @@ router.post('/', isLoggedIn , validateListing, WrapAsync(async (req, res, next) 
   }));
 
 //edit route 
-router.get('/:id/edit' , isLoggedIn , WrapAsync(async (req ,res) => {
+router.get('/:id/edit' , isLoggedIn ,isOwner, WrapAsync(async (req ,res) => {
     const {id} = req.params;
     let listing = await Listing.findById(id);
     if(!listing){
@@ -75,7 +63,7 @@ router.get('/:id/edit' , isLoggedIn , WrapAsync(async (req ,res) => {
 }));
 
 //update route
-router.put('/:id' , isLoggedIn , validateListing , WrapAsync(async (req , res) => {
+router.put('/:id' , isLoggedIn , isOwner ,  validateListing , WrapAsync(async (req , res) => {
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id , {...req.body.listing});
     req.flash("success" , "listing updated");
@@ -84,7 +72,7 @@ router.put('/:id' , isLoggedIn , validateListing , WrapAsync(async (req , res) =
 
 
 //delete route
-router.delete('/:id' , isLoggedIn , WrapAsync(async (req , res) => {
+router.delete('/:id' , isLoggedIn ,  isOwner , WrapAsync(async (req , res) => {
     const {id} = req.params;
     let deletedstring = await Listing.findByIdAndDelete(id);
     console.log("deleted : \n" , deletedstring);
