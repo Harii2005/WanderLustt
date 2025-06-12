@@ -17,7 +17,8 @@ const sessionOptions = {
     saveUninitialized : true,  
 };
 
-app.use(session(sessionOptions));
+app.use(session(sessionOptions));//enabling sessions in your Express.js app — like giving each visitor a private box to store their own data (e.g. login info, flash messages, cart).
+
 app.use(flash());
 // app.use(cookieParser("secretcode"));//this is for cookies and "secretcode" is for signed cookies verifiaction
 // app.use('/users' , users);

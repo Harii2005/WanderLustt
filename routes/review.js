@@ -8,6 +8,7 @@ const WrapAsync = require('../utils/WrapAsync.js');
 //middlewares
 const {validateReview} = require("../middleware.js");
 const {isLoggedIn} = require("../middleware.js");
+const {isReviewAuthor} = require("../middleware.js");
 
 
 
@@ -31,7 +32,7 @@ router.post("/" , isLoggedIn , validateReview , WrapAsync(async(req , res)=>{
 }));
 
 //delete reviews  button
-router.delete("/:reviewId", WrapAsync(async(req, res) => {
+router.delete("/:reviewId", isLoggedIn , isReviewAuthor , WrapAsync(async(req, res) => {
     let {id, reviewId} = req.params;
     await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});//this will remove the specified reviewId from listing
     
