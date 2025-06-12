@@ -1,7 +1,10 @@
 const Listing = require("./Models/listing");
 const ExpressError = require("./utils/ExpressError.js");
-const {listingSchema } = require('./Schema.js');
+const {listingSchema , reviewSchema } = require('./Schema.js');
 
+
+
+//LISTINGS
 module.exports.isLoggedIn = (req , res , next) => {
     if(!req.isAuthenticated()){
         req.session.redirectUrl = req.originalUrl
@@ -32,7 +35,7 @@ module.exports.isOwner = async (req , res , next) =>{
     next();
 }
 
-//function of middleware for validation of Schema 
+//function of middleware for validation of Schema  for LISTINGS
 module.exports.validateListing = (req , res , next)=> { //function of validation of schema(Middleware)
     let {error} = listingSchema.validate(req.body); // Validate the request body against the schema
     // console.log(error);
@@ -42,4 +45,19 @@ module.exports.validateListing = (req , res , next)=> { //function of validation
     }else {
         next();
     }
+};
+
+
+
+
+//REVIEWS
+//server side validation for review
+module.exports.validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const errMsg = error.details.map(el => el.message).join(", ");
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    };
 };

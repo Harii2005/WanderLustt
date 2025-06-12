@@ -4,29 +4,25 @@ const router = express.Router({mergeParams :true});
 const Listing = require("../Models/listing.js"); 
 const Review = require("../Models/review.js"); 
 const WrapAsync = require('../utils/WrapAsync.js');
-const ExpressError = require("../utils/ExpressError.js");
-const {reviewSchema} = require('../Schema.js');
+
+//middlewares
+const {validateReview} = require("../middleware.js");
+const {isLoggedIn} = require("../middleware.js");
 
 
-//server side validation for review
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const errMsg = error.details.map(el => el.message).join(", ");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next();
-    };
-};
+
 
 
 // REVIEW ROUTES
 //reviews post route
-router.post("/" , validateReview , WrapAsync(async(req , res)=>{
+router.post("/" , isLoggedIn , validateReview , WrapAsync(async(req , res)=>{
     let listing   = await Listing.findById(req.params.id);//params is used as id is passed via endpoint
     let newReview = new Review(req.body.review);//bez post req is used
-
+    // console.log(req.user._id); 
+    newReview.author = req.user._id;// we push only the objectId of UserSchema in reviewSchema
     listing.reviews.push(newReview);
+    // console.log(newReview);
+    // console.log(listing);
 
     await listing.save();
     await newReview.save();
