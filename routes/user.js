@@ -46,8 +46,8 @@ router.post('/login',
     }),
     (req , res) =>{
         req.flash("success" , "Welcome to Wanderlust! You are logged in!");
-        console.log(res.locals.originalUrl);
-        res.redirect(res.locals.originalUrl);
+        const redirectUrl = res.locals.originalUrl || '/listings'; //this line means that is res.locals.originalUrl exsists it will redirect to that otherwise it will be redirected to "/listings"
+        res.redirect(redirectUrl);
     }
 );
 
