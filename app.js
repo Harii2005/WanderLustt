@@ -45,9 +45,9 @@ app.use(flash());
 app.use(session(sessionOptions));
 
 //authentication
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+app.use(passport.initialize());//Starts Passport (middleware for authentication).
+app.use(passport.session());// Enables persistent login sessions using cookies + sessions.
+passport.use(new LocalStrategy(User.authenticate()));//This tells Passport to use the Local Strategy (i.e., username & password login), User.authenticate() comes from passport-local-mongoose
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -66,7 +66,7 @@ app.use(express.urlencoded({extended : true}));
 app.use(express.json());
 app.use(methodOverride("_method"));
 app.engine('ejs' , ejsmate);
-app.use(express.static(path.join(__dirname,'/public')))
+app.use(express.static(path.join(__dirname,'/public')));
 
 
 
@@ -82,7 +82,7 @@ async function main() {
     await mongoose.connect(MONGO_URL);
 }
 
-//using hashed passwords
+// // using hashed passwords
 // app.get('/demouser' , async (req , res)=>{
 //     let fakeUser = new User({
 //         email : "student@1234",

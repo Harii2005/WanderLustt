@@ -6,10 +6,7 @@ const User = require("./user.js");
 const listingSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: String,
-    image: {
-      filename: String,
-      url: String,
-    },
+    image: String,
     price: Number,
     location: String,
     country: String,

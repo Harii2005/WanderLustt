@@ -10,7 +10,6 @@ const userSchema = new Schema({
     // username and password are handled by passportLocalMongoose
 });
 
-// ✅ Correct usage: apply plugin to the schema
 userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("user", userSchema);
