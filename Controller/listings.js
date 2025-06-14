@@ -26,14 +26,29 @@ module.exports.showListing = (async  (req , res) => {
 });
 
 
+// module.exports.createListing = async (req, res, next) => {
+//     // console.log("req.body :",req.body);
+//     // console.log("Listing data:", req.body.listing) 
+ 
+//     const newListing = new Listing(req.body.listing);
+//     newListing.owner = req.user._id;//req.user will have the information of the user which is logged in ..
+//     await newListing.save();
+
+//     req.flash("success" , "new listing created");
+//     res.redirect('/listings');
+// }
 module.exports.createListing = async (req, res, next) => {
     // console.log("req.body :",req.body);
     // console.log("Listing data:", req.body.listing) 
- 
+    
+    let url = req.file.path;
+    let filename = req.file.filename;
+
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;//req.user will have the information of the user which is logged in ..
+    newListing.image = {url , filename};
     await newListing.save();
-
+ 
     req.flash("success" , "new listing created");
     res.redirect('/listings');
 }
@@ -51,7 +66,15 @@ module.exports.editListing = async (req ,res) => {
 
 module.exports.updateListing = async (req , res) => {
     let {id} = req.params;
-    await Listing.findByIdAndUpdate(id , {...req.body.listing});
+    let listing = await Listing.findByIdAndUpdate(id , {...req.body.listing});
+    
+    // If a new file is uploaded, update the image
+    if (req.file) {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = {url, filename};
+        await listing.save();
+    }
     req.flash("success" , "listing updated");
     res.redirect(`/listings/${id}`);
 }

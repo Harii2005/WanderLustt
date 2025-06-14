@@ -11,8 +11,10 @@ const {isOwner} = require("../middleware.js");
 const {validateListing} = require("../middleware.js");
 
 //to upload files
+const {storage} = require('../clouldConfig.js');
+
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const upload = multer({ storage});//stores in clouldinary
 
 //  '/' => "/lsiting/"
 
@@ -20,13 +22,17 @@ const upload = multer({ dest: 'uploads/' })
 
 //using router.route
 
+
 router
     .route('/')
-    .get(WrapAsync(ListingController.index))//Index Route
-    // .post(('/', isLoggedIn , validateListing, WrapAsync(ListingController.createListing)));//create route
-    .post(upload.single('listing[image]'), (req, res) =>{
-        res.send(req.file);//this will show the info of the uploaded file
-    });
+    .get(WrapAsync(ListingController.index)) // Index Route
+    .post(
+      isLoggedIn,
+      upload.single("listing[image]"), // Middleware for file upload (multer)
+      validateListing,
+      WrapAsync(ListingController.createListing)
+);
+
 
 //new route
 router.get('/new' , isLoggedIn , ListingController.rendernewform);//new route should be above /:id route other it will consider /new as id
@@ -35,7 +41,13 @@ router.get('/new' , isLoggedIn , ListingController.rendernewform);//new route sh
 router
     .route("/:id")
     .get(WrapAsync(ListingController.showListing))//show route
-    .put( isLoggedIn , isOwner ,  validateListing , WrapAsync(ListingController.updateListing))//Update Route
+    .put( //Update Route
+        isLoggedIn , 
+        isOwner ,  
+        upload.single("listing[image]") ,
+        validateListing , 
+        WrapAsync(ListingController.updateListing)
+    )
     .delete( isLoggedIn ,  isOwner , WrapAsync(ListingController.destroyListing));//delete Route
 
 
