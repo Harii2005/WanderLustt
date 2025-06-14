@@ -10,7 +10,9 @@ const {isLoggedIn} = require("../middleware.js");
 const {isOwner} = require("../middleware.js");
 const {validateListing} = require("../middleware.js");
 
-
+//to upload files
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 //  '/' => "/lsiting/"
 
@@ -21,7 +23,10 @@ const {validateListing} = require("../middleware.js");
 router
     .route('/')
     .get(WrapAsync(ListingController.index))//Index Route
-    .post(('/', isLoggedIn , validateListing, WrapAsync(ListingController.createListing)));//create route
+    // .post(('/', isLoggedIn , validateListing, WrapAsync(ListingController.createListing)));//create route
+    .post(upload.single('listing[image]'), (req, res) =>{
+        res.send(req.file);//this will show the info of the uploaded file
+    });
 
 //new route
 router.get('/new' , isLoggedIn , ListingController.rendernewform);//new route should be above /:id route other it will consider /new as id
