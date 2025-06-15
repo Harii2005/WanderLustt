@@ -22,6 +22,17 @@ const listingSchema = new mongoose.Schema({
     owner : {
       type : Schema.Types.ObjectId,//this means it will store the objectID of another collection here it is Review Scheam
       ref  : 'user',
+    },
+    geometry : {
+      type : {
+        type : String,
+        enum : ['Point'],
+        required : true
+      },
+      coordinates : {
+        type : [Number],
+        required : true
+      },
     }
   });
 
