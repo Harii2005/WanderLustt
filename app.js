@@ -38,13 +38,6 @@ const LocalStrategy = require('passport-local');
 const User = require('./Models/user.js');
 
 
-
-//root
-app.get('/' , (req , res) => {
-    res.send('hi this is root');
-});
-
-
 app.use(flash());
 app.use(session(sessionOptions));
 
