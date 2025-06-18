@@ -1,7 +1,7 @@
 if(process.env.NODE_ENV != "production"){
     require("dotenv").config();
 }
-
+const dbUrl = process.env.ATLASDB_URL//for getting the password of MongoAtlas
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
@@ -23,8 +23,23 @@ const userRouter = require("./routes/user.js");
 
 const flash = require('connect-flash');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl, // this will store the session in MongoDB Atlas
+    crypto: {
+        secret: process.env.SECRET,
+    },
+    touchAfter : 24 * 3600,//this will clear the session after 25hour
+});
+
+store.on("error" , ()=>{
+    console.log("error in mongo session store" , err);
+});
+
 const sessionOptions = {
-    secret: "mysupersecretcode",
+    store,//this is to store in mongo atlas
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -67,7 +82,7 @@ app.use(express.static(path.join(__dirname,'/public')));
 
 
 
-const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
+// const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
 
 main().then(() =>{
     console.log('connected to mongoDB Sucessfully...');
@@ -76,7 +91,7 @@ main().then(() =>{
 })
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 
 // // using hashed passwords
