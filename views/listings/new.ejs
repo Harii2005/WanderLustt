@@ -84,9 +84,17 @@
                     />
                     <div class="invalid-feedback">location should be valid</div>
                 </div>
-                <button class="btn btn-dark add-btn" >submit</button><br><br>
+                <button class="btn btn-dark add-btn" id="myBtn" >submit</button><br><br>
             </form>
         </div>
     </div>
 
 </body>
+
+<script>
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        document.getElementById("myBtn").click();
+      }
+    });
+</script>
