@@ -5,6 +5,9 @@
 ---
 
 ## 📁 Project Structure
+
+<pre>
+```bash
 Wanderlust/
 ├── Models/              # Database models
 │   ├── listing.js
@@ -32,6 +35,9 @@ Wanderlust/
 ├── app.js               # Main application file
 ├── Schema.js            # Validation schemas
 └── README.md            # Project documentation
+```
+</pre>
+
 
 ---
 
