@@ -116,7 +116,7 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err , req, res , next)=>{ //for handling asynchronous errors
-    let{statusCode = 500  , message = "something went wrong"} = err;
+    let{statusCode = 500  , message = "something went wrong"} = err; //this means if statusCode and message not given then it will take that as default token..
     res.status(statusCode).render('error.ejs' , {err});
 });
 
